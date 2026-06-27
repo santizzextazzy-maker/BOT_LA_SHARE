@@ -15,7 +15,7 @@ from datetime import datetime
 # ============================================================
 
 TOKEN = "vk1.a.ZKXnT8bImPyWRbF3TatyyDxVhnbxg1_9RFO6yCLVojZe7MT6M2R8WvfCpnLflN5lu0ZWeAyPV9gdKIPH8N-6_VrlpOfjcA9xuxTpHOxR1HVAoy2ynx5ZUle3Ljg_7dOjAxIofIXXmGH6qJMS1LaULcQDGN2lDAwpogzGOvxzisW4gM9FX0fHTQ2Nq9uLOovM6ENUSQVBiP0cMc9td-XNVQ"
-GROUP_ID = -239890913
+GROUP_ID = 239890913  # БЕЗ МИНУСА - для Long Poll API
 SUPER_ADMIN_ID = 600605993
 YANDEX_TOKEN = "y0__wgBEMDS1t0IGNuWAyDl9bmJGGqjUNo--zbVic_MgERQUGK5PMlY"
 
@@ -158,7 +158,11 @@ init_db()
 
 vk_session = vk_api.VkApi(token=TOKEN)
 vk = vk_session.get_api()
-longpoll = VkBotLongPoll(vk_session, group_id=str(GROUP_ID).replace("-", ""))
+
+# ID группы БЕЗ МИНУСА (исправлено)
+longpoll = VkBotLongPoll(vk_session, group_id=str(GROUP_ID))
+
+print("✅ VK LongPoll инициализирован")
 
 # ============================================================
 # 4. ИНИЦИАЛИЗАЦИЯ ЯНДЕКС.ДИСКА
@@ -943,6 +947,17 @@ while True:
                                 )
                             except:
                                 pass
+                
+                # ================================================
+                # 8.6 ОТВЕТ НА ЛЮБОЕ СООБЩЕНИЕ (для отладки)
+                # ================================================
+                else:
+                    vk.messages.send(
+                        peer_id=peer_id,
+                        message="Я получил твоё сообщение! Напиши 'Помощь' для списка команд.",
+                        keyboard=get_main_keyboard(),
+                        random_id=random.randint(1, 2**31)
+                    )
                 
     except Exception as e:
         print(f"Ошибка: {e}")
